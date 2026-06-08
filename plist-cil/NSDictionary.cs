@@ -281,36 +281,34 @@ public class NSDictionary : NSObject, IDictionary<string, NSObject>
                 return;
             }
         }
-        else
+
+        xml.Append("<dict>");
+        xml.Append(NEWLINE);
+
+        foreach(KeyValuePair<string, NSObject> kvp in dict)
         {
-            xml.Append("<dict>");
-            xml.Append(NEWLINE);
+            Indent(xml, level + 1);
+            xml.Append("<key>");
 
-            foreach(KeyValuePair<string, NSObject> kvp in dict)
+            //According to http://www.w3.org/TR/REC-xml/#syntax node values must not
+            //contain the characters < or &. Also the > character should be escaped.
+            if(kvp.Key.Contains("&") || kvp.Key.Contains("<") || kvp.Key.Contains(">"))
             {
-                Indent(xml, level + 1);
-                xml.Append("<key>");
-
-                //According to http://www.w3.org/TR/REC-xml/#syntax node values must not
-                //contain the characters < or &. Also the > character should be escaped.
-                if(kvp.Key.Contains("&") || kvp.Key.Contains("<") || kvp.Key.Contains(">"))
-                {
-                    xml.Append("<![CDATA[");
-                    xml.Append(kvp.Key.Replace("]]>", "]]]]><![CDATA[>"));
-                    xml.Append("]]>");
-                }
-                else
-                    xml.Append(kvp.Key);
-
-                xml.Append("</key>");
-                xml.Append(NEWLINE);
-                kvp.Value.ToXml(xml, level + 1, options);
-                xml.Append(NEWLINE);
+                xml.Append("<![CDATA[");
+                xml.Append(kvp.Key.Replace("]]>", "]]]]><![CDATA[>"));
+                xml.Append("]]>");
             }
+            else
+                xml.Append(kvp.Key);
 
-            Indent(xml, level);
-            xml.Append("</dict>");
+            xml.Append("</key>");
+            xml.Append(NEWLINE);
+            kvp.Value.ToXml(xml, level + 1, options);
+            xml.Append(NEWLINE);
         }
+
+        Indent(xml, level);
+        xml.Append("</dict>");
     }
 
     internal override void AssignIDs(BinaryPropertyListWriter outPlist)

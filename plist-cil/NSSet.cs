@@ -248,22 +248,20 @@ public class NSSet : NSObject, IEnumerable
                 return;
             }
         }
-        else
+
+        xml.Append("<array>");
+        xml.Append(NEWLINE);
+
+        if(ordered) set.Sort();
+
+        foreach(NSObject o in set)
         {
-            xml.Append("<array>");
+            o.ToXml(xml, level + 1);
             xml.Append(NEWLINE);
-
-            if(ordered) set.Sort();
-
-            foreach(NSObject o in set)
-            {
-                o.ToXml(xml, level + 1);
-                xml.Append(NEWLINE);
-            }
-
-            Indent(xml, level);
-            xml.Append("</array>");
         }
+
+        Indent(xml, level);
+        xml.Append("</array>");
     }
 
     internal override void AssignIDs(BinaryPropertyListWriter outPlist)

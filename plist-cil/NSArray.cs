@@ -198,20 +198,18 @@ public partial class NSArray : NSObject
                 return;
             }
         }
-        else
+
+        xml.Append("<array>");
+        xml.Append(NEWLINE);
+
+        foreach(NSObject o in array)
         {
-            xml.Append("<array>");
+            o.ToXml(xml, level + 1, options);
             xml.Append(NEWLINE);
-
-            foreach(NSObject o in array)
-            {
-                o.ToXml(xml, level + 1, options);
-                xml.Append(NEWLINE);
-            }
-
-            Indent(xml, level);
-            xml.Append("</array>");
         }
+
+        Indent(xml, level);
+        xml.Append("</array>");
     }
 
     internal override void AssignIDs(BinaryPropertyListWriter outPlist)
