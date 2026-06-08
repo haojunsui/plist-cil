@@ -183,20 +183,35 @@ public partial class NSArray : NSObject
         return hash;
     }
 
-    internal override void ToXml(StringBuilder xml, int level)
+    internal override void ToXml(StringBuilder xml, int level, XmlSerializationOptions? options = null)
     {
         Indent(xml, level);
-        xml.Append("<array>");
-        xml.Append(NEWLINE);
 
-        foreach(NSObject o in array)
+        if(array.Count == 0)
         {
-            o.ToXml(xml, level + 1);
-            xml.Append(NEWLINE);
+            if(
+                options is XmlSerializationOptions unwrappedOptions &&
+                unwrappedOptions.HasFlag(XmlSerializationOptions.SelfClosingTags)
+            )
+            {
+                xml.Append("<array/>");
+                return;
+            }
         }
+        else
+        {
+            xml.Append("<array>");
+            xml.Append(NEWLINE);
 
-        Indent(xml, level);
-        xml.Append("</array>");
+            foreach(NSObject o in array)
+            {
+                o.ToXml(xml, level + 1, options);
+                xml.Append(NEWLINE);
+            }
+
+            Indent(xml, level);
+            xml.Append("</array>");
+        }
     }
 
     internal override void AssignIDs(BinaryPropertyListWriter outPlist)

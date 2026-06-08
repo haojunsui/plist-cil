@@ -116,7 +116,7 @@ public class NSString : NSObject, IComparable
     /// <returns>The NSString's contents.</returns>
     public override string ToString() => Content;
 
-    internal override void ToXml(StringBuilder xml, int level)
+    internal override void ToXml(StringBuilder xml, int level, XmlSerializationOptions? _)
     {
         Indent(xml, level);
         xml.Append("<string>");

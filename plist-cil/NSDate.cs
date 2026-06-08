@@ -114,7 +114,7 @@ public class NSDate : NSObject
     /// </returns>
     public override int GetHashCode() => Date.GetHashCode();
 
-    internal override void ToXml(StringBuilder xml, int level)
+    internal override void ToXml(StringBuilder xml, int level, XmlSerializationOptions? _)
     {
         Indent(xml, level);
         xml.Append("<date>");

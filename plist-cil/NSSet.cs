@@ -233,22 +233,37 @@ public class NSSet : NSObject, IEnumerable
     /// </summary>
     /// <param name="xml">The XML StringBuilder</param>
     /// <param name="level">The indentation level</param>
-    internal override void ToXml(StringBuilder xml, int level)
+    internal override void ToXml(StringBuilder xml, int level, XmlSerializationOptions? options = null)
     {
         Indent(xml, level);
-        xml.Append("<array>");
-        xml.Append(NEWLINE);
 
-        if(ordered) set.Sort();
-
-        foreach(NSObject o in set)
+        if(set.Count == 0)
         {
-            o.ToXml(xml, level + 1);
-            xml.Append(NEWLINE);
+            if(
+                options is XmlSerializationOptions unwrappedOptions &&
+                unwrappedOptions.HasFlag(XmlSerializationOptions.SelfClosingTags)
+            )
+            {
+                xml.Append("<array/>");
+                return;
+            }
         }
+        else
+        {
+            xml.Append("<array>");
+            xml.Append(NEWLINE);
 
-        Indent(xml, level);
-        xml.Append("</array>");
+            if(ordered) set.Sort();
+
+            foreach(NSObject o in set)
+            {
+                o.ToXml(xml, level + 1);
+                xml.Append(NEWLINE);
+            }
+
+            Indent(xml, level);
+            xml.Append("</array>");
+        }
     }
 
     internal override void AssignIDs(BinaryPropertyListWriter outPlist)

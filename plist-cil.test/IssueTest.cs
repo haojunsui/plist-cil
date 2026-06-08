@@ -188,4 +188,17 @@ public static class IssueTest
         Assert.IsType<double>(weight);
         Assert.Equal(10d, (double)weight);
     }
+
+    /// <summary>
+    ///     Makes sure that empty dictionaries/arrays are serialized correctly if XmlSerializationOptions self-closing tags option is used.
+    /// </summary>
+    [Fact]
+    public static void SelfClosingTagsTest()
+    {
+        string   expected = File.ReadAllText(@"test-files/SelfClosingTags.plist");
+        NSObject value    = XmlPropertyListParser.Parse(new FileInfo(@"test-files/SelfClosingTags.plist"));
+        string   actual   = value.ToXmlPropertyList(XmlSerializationOptions.SelfClosingTags);
+
+        Assert.Equal(expected, actual, ignoreLineEndingDifferences: true);
+    }
 }
